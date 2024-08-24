@@ -4,6 +4,8 @@ import com.stock_microservice.stock_microservice.application.dto.CategoryRequest
 import com.stock_microservice.stock_microservice.application.dto.CategoryResponse;
 import com.stock_microservice.stock_microservice.application.mapper.CategoryRequestMapper;
 import com.stock_microservice.stock_microservice.application.mapper.CategoryResponseMapper;
+import com.stock_microservice.stock_microservice.domain.Pagination.PageCustom;
+import com.stock_microservice.stock_microservice.domain.Pagination.PageRequestCustom;
 import com.stock_microservice.stock_microservice.domain.api.ICategoryServicePort;
 import com.stock_microservice.stock_microservice.domain.model.Category;
 import lombok.RequiredArgsConstructor;
@@ -66,5 +68,18 @@ public class CategoryHandler implements ICategoryHandler {
         Category category = categoryServicePort.getCategoryByName(name);
         categoryServicePort.deleteCategoryByName(name);
 
+    }
+
+    @Override
+    public PageCustom<CategoryResponse> getCategories(PageRequestCustom pageRequest) {
+        PageCustom<Category> categoriesPage = categoryServicePort.getCategories(pageRequest);
+        List<CategoryResponse> responseList = categoryResponseMapper.toResponseList(categoriesPage.getContent());
+        return new PageCustom<>(
+                responseList,
+                categoriesPage.getTotalElements(),
+                categoriesPage.getTotalPages(),
+                categoriesPage.getCurrentPage(),
+                categoriesPage.isAscending()
+        );
     }
 }
