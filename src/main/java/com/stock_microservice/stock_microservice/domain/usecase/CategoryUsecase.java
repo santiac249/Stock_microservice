@@ -1,5 +1,7 @@
 package com.stock_microservice.stock_microservice.domain.usecase;
 
+import com.stock_microservice.stock_microservice.domain.Pagination.PageCustom;
+import com.stock_microservice.stock_microservice.domain.Pagination.PageRequestCustom;
 import com.stock_microservice.stock_microservice.domain.api.ICategoryServicePort;
 import com.stock_microservice.stock_microservice.domain.exception.InvalidCategoryDataException;
 import com.stock_microservice.stock_microservice.domain.model.Category;
@@ -47,16 +49,29 @@ public class CategoryUsecase implements ICategoryServicePort {
 
     @Override
     public void updateCategory(Category category) {
-
+        categoryPersistencePort.updateCategory(category);
     }
 
     @Override
     public void deleteCategoryById(Long id) {
-
+        categoryPersistencePort.deleteCategoryById(id);
     }
 
     @Override
     public void deleteCategoryByName(String name) {
+        categoryPersistencePort.deleteCategoryByName(name);
+    }
 
+    @Override
+    public PageCustom<Category> getCategories(PageRequestCustom pageRequest) {
+        // Llamar al puerto de persistencia para obtener las categorías paginadas
+        PageCustom<Category> categoriesPage = categoryPersistencePort.getCategories(pageRequest);
+
+        // Validar que la respuesta no sea nula
+        if (categoriesPage == null || categoriesPage.getContent().isEmpty()) {
+            throw new InvalidCategoryDataException("No se encontraron categorías.");
+        }
+
+        return categoriesPage;
     }
 }
