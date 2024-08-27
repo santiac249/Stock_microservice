@@ -1,5 +1,7 @@
 package com.stock_microservice.stock_microservice.infrastructure.output.jpa.adapter;
 
+import com.stock_microservice.stock_microservice.domain.Pagination.PageRequestCustom;
+import com.stock_microservice.stock_microservice.domain.Pagination.PageCustom;
 import com.stock_microservice.stock_microservice.domain.exception.DuplicateCategoryNameException;
 import com.stock_microservice.stock_microservice.domain.model.Category;
 import com.stock_microservice.stock_microservice.domain.spi.ICategoryPersistencePort;
@@ -9,7 +11,9 @@ import com.stock_microservice.stock_microservice.infrastructure.output.jpa.entit
 import com.stock_microservice.stock_microservice.infrastructure.output.jpa.mapper.CategoryEntityMapper;
 import com.stock_microservice.stock_microservice.infrastructure.output.jpa.repository.ICategoryRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.Optional;
@@ -63,5 +67,26 @@ public class CategoryJpaAdapter implements ICategoryPersistencePort {
     @Override
     public void deleteCategoryByName(String name) {
         categoryRepository.deleteByName(name);
+    }
+
+    @Override
+    public PageCustom<Category> getCategories(PageRequestCustom pageRequest) {
+        PageRequest pageRequestSpring = PageRequest.of(
+                pageRequest.getPage(),
+                pageRequest.getSize(),
+                pageRequest.isAscending() ? Sort.by(pageRequest.getSortField()).ascending() : Sort.by(pageRequest.getSortField()).descending()
+        );
+
+        Page<CategoryEntity> categoryEntityPage = categoryRepository.findAll(pageRequestSpring);
+
+        List<Category> categories = categoryEntityMapper.toCategoryList(categoryEntityPage.getContent());
+
+        return new PageCustom<>(
+                categories,
+                (int) categoryEntityPage.getTotalElements(),
+                categoryEntityPage.getTotalPages(),
+                categoryEntityPage.getNumber(),
+                pageRequest.isAscending()
+        );
     }
 }

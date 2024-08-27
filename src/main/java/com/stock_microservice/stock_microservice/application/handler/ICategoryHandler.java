@@ -2,6 +2,7 @@ package com.stock_microservice.stock_microservice.application.handler;
 
 import com.stock_microservice.stock_microservice.application.dto.CategoryRequest;
 import com.stock_microservice.stock_microservice.application.dto.CategoryResponse;
+import com.stock_microservice.stock_microservice.domain.Pagination.*;
 
 import java.util.List;
 
@@ -21,6 +22,5 @@ public interface ICategoryHandler {
 
     void deleteCategoryByName(String nombre);
 
-
-
+    PageCustom<CategoryResponse> getCategories(PageRequestCustom pageRequest);
 }
