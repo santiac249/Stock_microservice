@@ -3,7 +3,6 @@ package com.stock_microservice.stock_microservice.application.mapper;
 import com.stock_microservice.stock_microservice.application.dto.CategoryResponse;
 import com.stock_microservice.stock_microservice.domain.model.Category;
 import org.mapstruct.Mapper;
-import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
 

@@ -1,14 +1,13 @@
 package com.stock_microservice.stock_microservice.application.mapper;
 
-import com.stock_microservice.stock_microservice.application.dto.CategoryRequest;
-import com.stock_microservice.stock_microservice.domain.model.Category;
+import com.stock_microservice.stock_microservice.application.dto.BrandRequest;
+import com.stock_microservice.stock_microservice.domain.model.Brand;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
-public interface CategoryRequestMapper {
+public interface BrandRequestMapper {
     @Mapping(source = "name", target = "name")
     @Mapping(source = "description", target = "description")
-    Category toCategory(CategoryRequest categoryRequest);
-
+    Brand toBrand(BrandRequest brandRequest);
 }
