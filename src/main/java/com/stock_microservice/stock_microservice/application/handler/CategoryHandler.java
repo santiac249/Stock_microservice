@@ -2,12 +2,14 @@ package com.stock_microservice.stock_microservice.application.handler;
 
 import com.stock_microservice.stock_microservice.application.dto.CategoryRequest;
 import com.stock_microservice.stock_microservice.application.dto.CategoryResponse;
+
 import com.stock_microservice.stock_microservice.application.mapper.CategoryRequestMapper;
 import com.stock_microservice.stock_microservice.application.mapper.CategoryResponseMapper;
 import com.stock_microservice.stock_microservice.domain.Pagination.PageCustom;
 import com.stock_microservice.stock_microservice.domain.Pagination.PageRequestCustom;
 import com.stock_microservice.stock_microservice.domain.api.ICategoryServicePort;
 import com.stock_microservice.stock_microservice.domain.model.Category;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,13 +61,11 @@ public class CategoryHandler implements ICategoryHandler {
 
     @Override
     public void deleteCategoryById(Long id) {
-        Category category = categoryServicePort.getCategoryById(id);
         categoryServicePort.deleteCategoryById(id);
     }
 
     @Override
     public void deleteCategoryByName(String name) {
-        Category category = categoryServicePort.getCategoryByName(name);
         categoryServicePort.deleteCategoryByName(name);
 
     }
