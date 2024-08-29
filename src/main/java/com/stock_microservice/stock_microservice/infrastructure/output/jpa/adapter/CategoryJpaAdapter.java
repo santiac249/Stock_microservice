@@ -49,13 +49,13 @@ public class CategoryJpaAdapter implements ICategoryPersistencePort {
         if(categoryRepository.findByName(category.getName()).isPresent()){
             throw new DuplicateCategoryNameException(category.getName());
         }
-        CategoryEntity categoryEntity = categoryEntityMapper.toEntity(category);
+        CategoryEntity categoryEntity = categoryEntityMapper.toCategoryEntity(category);
         categoryRepository.save(categoryEntity);
     }
 
     @Override
     public void updateCategory(Category category) {
-        categoryRepository.save(categoryEntityMapper.toEntity(category));
+        categoryRepository.save(categoryEntityMapper.toCategoryEntity(category));
     }
 
     @Override

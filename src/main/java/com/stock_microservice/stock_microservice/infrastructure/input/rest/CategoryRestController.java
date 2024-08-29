@@ -46,7 +46,7 @@ public class CategoryRestController {
     @Operation(summary = "Obtener una categoría por ID")
     @ApiResponse(responseCode = "200", description = "Operación exitosa",
             content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CategoryResponse.class))})
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     public ResponseEntity<CategoryResponse> getCategoryById(@PathVariable Long id){
         return ResponseEntity.ok(categoryHandler.getCategoryById(id));
     }
@@ -54,7 +54,7 @@ public class CategoryRestController {
     @Operation(summary = "Obtener una categoría por nombre")
     @ApiResponse(responseCode = "200", description = "Operación exitosa",
             content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CategoryResponse.class))})
-    @GetMapping("/{name}")
+    @GetMapping("/name/{name}")
     public ResponseEntity<CategoryResponse> getCategoryByName(@PathVariable String name){
         return ResponseEntity.ok(categoryHandler.getCategoryByName(name));
     }
@@ -75,7 +75,7 @@ public class CategoryRestController {
             @ApiResponse(responseCode = "204", description = "Categoría eliminada exitosamente"),
             @ApiResponse(responseCode = "404", description = "Categoría no encontrada", content = @Content)
     })
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/id/{id}")
     public ResponseEntity<Void> deleteCategoryById(@PathVariable Long id){
         categoryHandler.deleteCategoryById(id);
         return ResponseEntity.noContent().build();
@@ -86,7 +86,7 @@ public class CategoryRestController {
             @ApiResponse(responseCode = "204", description = "Categoría eliminada exitosamente"),
             @ApiResponse(responseCode = "404", description = "Categoría no encontrada", content = @Content)
     })
-    @DeleteMapping("/{name}")
+    @DeleteMapping("/name/{name}")
     public ResponseEntity<Void> deleteCategoryByName(@PathVariable String name){
         categoryHandler.deleteCategoryByName(name);
         return ResponseEntity.noContent().build();

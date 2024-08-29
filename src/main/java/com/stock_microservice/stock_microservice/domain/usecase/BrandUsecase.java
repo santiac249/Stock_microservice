@@ -3,7 +3,10 @@ package com.stock_microservice.stock_microservice.domain.usecase;
 import com.stock_microservice.stock_microservice.domain.api.IBrandServicePort;
 import com.stock_microservice.stock_microservice.domain.exception.InvalidBrandDataException;
 import com.stock_microservice.stock_microservice.domain.model.Brand;
+import com.stock_microservice.stock_microservice.domain.model.Category;
 import com.stock_microservice.stock_microservice.domain.spi.IBrandPersistencePort;
+
+import java.util.List;
 
 public class BrandUsecase implements IBrandServicePort {
 
@@ -24,5 +27,10 @@ public class BrandUsecase implements IBrandServicePort {
             throw new InvalidBrandDataException("La descripción no puede contener más de 120 caracteres.");
         }
         brandPersistencePort.saveBrand(brand);
+    }
+
+    @Override
+    public List<Brand> getAllBrands() {
+        return List.of();
     }
 }
