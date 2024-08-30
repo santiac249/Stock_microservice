@@ -4,6 +4,8 @@ import com.stock_microservice.stock_microservice.application.dto.BrandRequest;
 import com.stock_microservice.stock_microservice.application.dto.BrandResponse;
 import com.stock_microservice.stock_microservice.application.mapper.BrandRequestMapper;
 import com.stock_microservice.stock_microservice.application.mapper.BrandResponseMapper;
+import com.stock_microservice.stock_microservice.domain.Pagination.PageCustom;
+import com.stock_microservice.stock_microservice.domain.Pagination.PageRequestCustom;
 import com.stock_microservice.stock_microservice.domain.api.IBrandServicePort;
 import com.stock_microservice.stock_microservice.domain.model.Brand;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +31,32 @@ public class BrandHandler implements IBrandHandler{
     }
 
     @Override
+    public BrandResponse getBrandById(Long id) {
+        Brand brand = brandServicePort.getBrandById(id);
+        return brandResponseMapper.toResponse(brand);
+    }
+
+    @Override
+    public BrandResponse getBrandByName(String name) {
+        Brand brand = brandServicePort.getBrandByName(name);
+        return brandResponseMapper.toResponse(brand);
+    }
+
+    @Override
     public List<BrandResponse> getAllBrands() {
         return brandResponseMapper.toResponseList(brandServicePort.getAllBrands());
+    }
+
+    @Override
+    public PageCustom<BrandResponse> getBrands(PageRequestCustom pageRequest) {
+        PageCustom<Brand> brandsPage = brandServicePort.getBrands(pageRequest);
+        List<BrandResponse> responseList = brandResponseMapper.toResponseList(brandsPage.getContent());
+        return new PageCustom<>(
+                responseList,
+                brandsPage.getTotalElements(),
+                brandsPage.getTotalPages(),
+                brandsPage.getCurrentPage(),
+                brandsPage.isAscending()
+        );
     }
 }

@@ -1,7 +1,10 @@
 package com.stock_microservice.stock_microservice.domain.usecase;
 
+import com.stock_microservice.stock_microservice.domain.Pagination.PageCustom;
+import com.stock_microservice.stock_microservice.domain.Pagination.PageRequestCustom;
 import com.stock_microservice.stock_microservice.domain.api.IBrandServicePort;
 import com.stock_microservice.stock_microservice.domain.exception.InvalidBrandDataException;
+import com.stock_microservice.stock_microservice.domain.exception.InvalidCategoryDataException;
 import com.stock_microservice.stock_microservice.domain.model.Brand;
 import com.stock_microservice.stock_microservice.domain.model.Category;
 import com.stock_microservice.stock_microservice.domain.spi.IBrandPersistencePort;
@@ -31,6 +34,29 @@ public class BrandUsecase implements IBrandServicePort {
 
     @Override
     public List<Brand> getAllBrands() {
-        return List.of();
+        return brandPersistencePort.getAllBrands();
+    }
+
+    @Override
+    public Brand getBrandById(Long id) {
+        return brandPersistencePort.getBrandById(id);
+    }
+
+    @Override
+    public Brand getBrandByName(String name) {
+        return brandPersistencePort.getBrandByName(name);
+    }
+
+    @Override
+    public PageCustom<Brand> getBrands(PageRequestCustom pageRequest) {
+        // Llamar al puerto de persistencia para obtener las categorías paginadas
+        PageCustom<Brand> brandsPage = brandPersistencePort.getBrands(pageRequest);
+
+        // Validar que la respuesta no sea nula
+        if (brandsPage == null || brandsPage.getContent().isEmpty()) {
+            throw new InvalidBrandDataException("No se encontraron marcas.");
+        }
+
+        return brandsPage;
     }
 }
