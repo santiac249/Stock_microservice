@@ -3,7 +3,6 @@ package com.stock_microservice.stock_microservice.domain.api;
 import com.stock_microservice.stock_microservice.domain.Pagination.PageCustom;
 import com.stock_microservice.stock_microservice.domain.Pagination.PageRequestCustom;
 import com.stock_microservice.stock_microservice.domain.model.Brand;
-import com.stock_microservice.stock_microservice.domain.model.Category;
 
 import java.util.List;
 

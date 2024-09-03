@@ -4,9 +4,7 @@ import com.stock_microservice.stock_microservice.domain.Pagination.PageCustom;
 import com.stock_microservice.stock_microservice.domain.Pagination.PageRequestCustom;
 import com.stock_microservice.stock_microservice.domain.api.IBrandServicePort;
 import com.stock_microservice.stock_microservice.domain.exception.InvalidBrandDataException;
-import com.stock_microservice.stock_microservice.domain.exception.InvalidCategoryDataException;
 import com.stock_microservice.stock_microservice.domain.model.Brand;
-import com.stock_microservice.stock_microservice.domain.model.Category;
 import com.stock_microservice.stock_microservice.domain.spi.IBrandPersistencePort;
 
 import java.util.List;
