@@ -2,7 +2,6 @@ package com.stock_microservice.stock_microservice.infrastructure.input.rest;
 
 import com.stock_microservice.stock_microservice.application.dto.BrandRequest;
 import com.stock_microservice.stock_microservice.application.dto.BrandResponse;
-import com.stock_microservice.stock_microservice.application.dto.CategoryResponse;
 import com.stock_microservice.stock_microservice.application.handler.IBrandHandler;
 import com.stock_microservice.stock_microservice.domain.Pagination.PageCustom;
 import com.stock_microservice.stock_microservice.domain.Pagination.PageRequestCustom;
