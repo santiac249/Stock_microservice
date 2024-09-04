@@ -12,7 +12,7 @@ public interface IBrandHandler {
 
     void saveBrand(BrandRequest brandRequest);
     BrandResponse getBrandById(Long id);
-    BrandResponse getBrandByName(String nombre);
+    BrandResponse getBrandByName(String name);
     List<BrandResponse> getAllBrands();
     PageCustom<BrandResponse> getBrands(PageRequestCustom pageRequest);
 }

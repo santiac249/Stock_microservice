@@ -1,6 +1,10 @@
 package com.stock_microservice.stock_microservice.domain.usecase;
 
+import com.stock_microservice.stock_microservice.domain.Pagination.PageCustom;
+import com.stock_microservice.stock_microservice.domain.Pagination.PageRequestCustom;
 import com.stock_microservice.stock_microservice.domain.api.IProductServicePort;
+import com.stock_microservice.stock_microservice.domain.exception.InvalidBrandDataException;
+import com.stock_microservice.stock_microservice.domain.model.Brand;
 import com.stock_microservice.stock_microservice.domain.model.Category;
 import com.stock_microservice.stock_microservice.domain.model.Product;
 import com.stock_microservice.stock_microservice.domain.spi.IBrandPersistencePort;
@@ -63,5 +67,33 @@ public class ProductUsecase implements IProductServicePort {
 
         // Guardar el producto si todas las validaciones pasan
         productPersistencePort.saveProduct(product);
+    }
+
+    @Override
+    public List<Product> getAllProducts() {
+        return productPersistencePort.getAllProducts();
+    }
+
+    @Override
+    public Product getProductById(Long id) {
+        return productPersistencePort.getProductById(id);
+    }
+
+    @Override
+    public Product getProductByName(String name) {
+        return productPersistencePort.getProductByName(name);
+    }
+
+    @Override
+    public PageCustom<Product> getProducts(PageRequestCustom pageRequest) {
+        // Llamar al puerto de persistencia para obtener los productos paginados
+        PageCustom<Product> productsPage = productPersistencePort.getProducts(pageRequest);
+
+        // Validar que la respuesta no sea nula
+        if (productsPage == null || productsPage.getContent().isEmpty()) {
+            throw new InvalidBrandDataException("No se encontraron products.");
+        }
+
+        return productsPage;
     }
 }
