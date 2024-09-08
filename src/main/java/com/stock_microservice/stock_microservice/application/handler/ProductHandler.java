@@ -1,9 +1,11 @@
 package com.stock_microservice.stock_microservice.application.handler;
 
 import com.stock_microservice.stock_microservice.application.dto.ProductRequest;
-import com.stock_microservice.stock_microservice.application.mapper.BrandRequestMapper;
+import com.stock_microservice.stock_microservice.application.dto.ProductResponse;
 import com.stock_microservice.stock_microservice.application.mapper.ProductRequestMapper;
 import com.stock_microservice.stock_microservice.application.mapper.ProductResponseMapper;
+import com.stock_microservice.stock_microservice.domain.Pagination.PageCustom;
+import com.stock_microservice.stock_microservice.domain.Pagination.PageRequestCustom;
 import com.stock_microservice.stock_microservice.domain.api.IBrandServicePort;
 import com.stock_microservice.stock_microservice.domain.api.ICategoryServicePort;
 import com.stock_microservice.stock_microservice.domain.api.IProductServicePort;
@@ -23,10 +25,9 @@ public class ProductHandler implements IProductHandler {
 
     private final IProductServicePort productServicePort;
     private final ProductRequestMapper productRequestMapper;
+    private final ProductResponseMapper productResponseMapper;
     private final IBrandServicePort brandServicePort;
     private final ICategoryServicePort categoryServicePort;
-    private final BrandRequestMapper brandRequestMapper;
-    private final ProductResponseMapper productResponseMapper;
 
     @Override
     public void saveProduct(ProductRequest productRequest) {
@@ -48,4 +49,36 @@ public class ProductHandler implements IProductHandler {
         // Guardar el producto
         productServicePort.saveProduct(product);
     }
+
+    @Override
+    public ProductResponse getProductById(Long id) {
+        Product product = productServicePort.getProductById(id);
+        return productResponseMapper.toResponse(product);
+    }
+
+    @Override
+    public ProductResponse getProductByName(String name) {
+        Product product = productServicePort.getProductByName(name);
+        return productResponseMapper.toResponse(product);
+    }
+
+    @Override
+    public List<ProductResponse> getAllProducts() {
+        return productResponseMapper.toResponseList(productServicePort.getAllProducts());
+    }
+
+    @Override
+    public PageCustom<ProductResponse> getProducts(PageRequestCustom pageRequest, String brand, String category) {
+        PageCustom<Product> productsPage = productServicePort.getProducts(pageRequest, brand, category);
+
+        List<ProductResponse> responseList = productResponseMapper.toResponseList(productsPage.getContent());
+        return new PageCustom<>(
+                responseList,
+                productsPage.getTotalElements(),
+                productsPage.getTotalPages(),
+                productsPage.getCurrentPage(),
+                productsPage.isAscending()
+        );
+    }
+
 }

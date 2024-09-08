@@ -1,14 +1,17 @@
 package com.stock_microservice.stock_microservice.domain.usecase;
 
+import com.stock_microservice.stock_microservice.domain.Pagination.PageCustom;
+import com.stock_microservice.stock_microservice.domain.Pagination.PageRequestCustom;
 import com.stock_microservice.stock_microservice.domain.api.IProductServicePort;
+import com.stock_microservice.stock_microservice.domain.exception.*;
 import com.stock_microservice.stock_microservice.domain.model.Category;
 import com.stock_microservice.stock_microservice.domain.model.Product;
 import com.stock_microservice.stock_microservice.domain.spi.IBrandPersistencePort;
 import com.stock_microservice.stock_microservice.domain.spi.ICategoryPersistencePort;
 import com.stock_microservice.stock_microservice.domain.spi.IProductPersistencePort;
 import com.stock_microservice.stock_microservice.infrastructure.exception.BrandNotFoundException;
-import com.stock_microservice.stock_microservice.domain.exception.CategoryValidationException;
 import com.stock_microservice.stock_microservice.infrastructure.exception.CategoryNotFoundException;
+import com.stock_microservice.stock_microservice.infrastructure.exception.ProductNotFoundException;
 
 import java.util.HashSet;
 import java.util.List;
@@ -63,5 +66,43 @@ public class ProductUsecase implements IProductServicePort {
 
         // Guardar el producto si todas las validaciones pasan
         productPersistencePort.saveProduct(product);
+    }
+
+    @Override
+    public List<Product> getAllProducts() {
+        return productPersistencePort.getAllProducts();
+    }
+
+    @Override
+    public Product getProductById(Long id) {
+        return productPersistencePort.getProductById(id);
+    }
+
+    @Override
+    public Product getProductByName(String name) {
+        return productPersistencePort.getProductByName(name);
+    }
+
+    @Override
+    public PageCustom<Product> getProducts(PageRequestCustom pageRequest, String brand, String category) {
+        PageCustom<Product> productsPage = productPersistencePort.getProducts(pageRequest, brand, category);
+
+        // Verificaciones de la pagina de productos
+        if (productsPage.getContent().isEmpty()) {
+            if (brand != null && !brand.isEmpty() && category != null && !category.isEmpty()) {
+                throw new ProductNotFoundForBrandAndCategoryException(
+                        "Ningun producto encontrado de la marca: "+brand+" y la categoria: "+category);
+            } else if (brand != null && !brand.isEmpty()) {
+                throw new ProductNotFoundForBrandException(
+                        "La marca: "+brand+" no tiene productos asociados");
+            } else if (category != null && !category.isEmpty()) {
+                throw new ProductNotFoundForCategoryException(
+                        "La categoria "+category+" no tiene productos asociados.");
+            } else {
+                throw new ProductNotFoundException("No se encontraron productos.");
+            }
+        }
+
+        return productsPage;
     }
 }

@@ -88,4 +88,5 @@ public class CategoryJpaAdapter implements ICategoryPersistencePort {
                 pageRequest.isAscending()
         );
     }
+
 }
