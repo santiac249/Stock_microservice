@@ -11,5 +11,5 @@ public interface IProductServicePort {
     List<Product> getAllProducts();
     Product getProductById(Long id);
     Product getProductByName(String name);
-    PageCustom<Product> getProducts(PageRequestCustom pageRequest);
+    PageCustom<Product> getProducts(PageRequestCustom pageRequest, String brand, String category);
 }

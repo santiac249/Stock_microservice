@@ -74,7 +74,9 @@ public class ProductRestController {
     public ResponseEntity<PageCustom<ProductResponse>> getProductsPaged(
             @PathVariable int page,
             @PathVariable int size,
-            @PathVariable String sortOrder) {
+            @PathVariable String sortOrder,
+            @RequestParam(required = false) String brand,
+            @RequestParam(required = false) String category) {
 
         // Divide el sortOrder en campo y orden
         String[] sort = sortOrder.split(","); // dividir en campo y orden
@@ -82,7 +84,7 @@ public class ProductRestController {
         boolean ascending = sort.length > 1 && sort[1].equalsIgnoreCase("asc");
 
         PageRequestCustom pageRequest = new PageRequestCustom(page, size, ascending, sortField);
-        PageCustom<ProductResponse> productsPage = productHandler.getProducts(pageRequest);
+        PageCustom<ProductResponse> productsPage = productHandler.getProducts(pageRequest, brand, category);
         return ResponseEntity.ok(productsPage);
     }
 }

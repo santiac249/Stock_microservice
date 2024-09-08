@@ -13,6 +13,7 @@ import com.stock_microservice.stock_microservice.infrastructure.output.jpa.repos
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
@@ -53,22 +54,30 @@ public class ProductJpaAdapter implements IProductPersistencePort {
     }
 
     @Override
-    public PageCustom<Product> getProducts(PageRequestCustom pageRequest) {
-        PageRequest pageRequestSpring = PageRequest.of(
-                pageRequest.getPage(),
-                pageRequest.getSize(),
-                pageRequest.isAscending() ? Sort.by(pageRequest.getSortField()).ascending() : Sort.by(pageRequest.getSortField()).descending()
-        );
+    public PageCustom<Product> getProducts(PageRequestCustom pageRequest, String brand, String category) {
+        Sort sort = Sort.by(pageRequest.isAscending() ? Sort.Direction.ASC : Sort.Direction.DESC, pageRequest.getSortField());
+        Pageable pageable = PageRequest.of(pageRequest.getPage(), pageRequest.getSize(), sort);
 
-        Page<ProductEntity> productEntityPage = productRepository.findAll(pageRequestSpring);
+        Page<ProductEntity> pageResult;
 
-        List<Product> products = productEntityMapper.toProductList(productEntityPage.getContent());
+        //Validaciones
+        if (brand != null && !brand.isEmpty() && category != null && !category.isEmpty()) {
+            pageResult = productRepository.findByBrandNameContainingIgnoreCaseAndCategoriesNameContainingIgnoreCase(brand, category, pageable);
+        } else if (brand != null && !brand.isEmpty()) {
+            pageResult = productRepository.findByBrandNameContainingIgnoreCase(brand, pageable);
+        } else if (category != null && !category.isEmpty()) {
+            pageResult = productRepository.findByCategoriesNameContainingIgnoreCase(category, pageable);
+        } else {
+            pageResult = productRepository.findAll(pageable);
+        }
+
+        List<Product> products = productEntityMapper.toProductList(pageResult.getContent());
 
         return new PageCustom<>(
                 products,
-                (int) productEntityPage.getTotalElements(),
-                productEntityPage.getTotalPages(),
-                productEntityPage.getNumber(),
+                (int) pageResult.getTotalElements(),
+                pageResult.getTotalPages(),
+                pageResult.getNumber(),
                 pageRequest.isAscending()
         );
     }

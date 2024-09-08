@@ -1,5 +1,10 @@
 package com.stock_microservice.stock_microservice.domain.usecase;
 
+import com.stock_microservice.stock_microservice.domain.Pagination.PageCustom;
+import com.stock_microservice.stock_microservice.domain.Pagination.PageRequestCustom;
+import com.stock_microservice.stock_microservice.domain.exception.ProductNotFoundForBrandAndCategoryException;
+import com.stock_microservice.stock_microservice.domain.exception.ProductNotFoundForBrandException;
+import com.stock_microservice.stock_microservice.domain.exception.ProductNotFoundForCategoryException;
 import com.stock_microservice.stock_microservice.domain.model.Brand;
 import com.stock_microservice.stock_microservice.domain.model.Category;
 import com.stock_microservice.stock_microservice.domain.model.Product;
@@ -9,15 +14,18 @@ import com.stock_microservice.stock_microservice.domain.spi.IProductPersistenceP
 import com.stock_microservice.stock_microservice.infrastructure.exception.BrandNotFoundException;
 import com.stock_microservice.stock_microservice.domain.exception.CategoryValidationException;
 import com.stock_microservice.stock_microservice.infrastructure.exception.CategoryNotFoundException;
+import com.stock_microservice.stock_microservice.infrastructure.exception.ProductNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.util.Arrays;
 import java.util.Collections;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -155,5 +163,66 @@ class ProductUsecaseTest {
         verify(brandPersistencePort).getBrandById(1L);
         verify(categoryPersistencePort).getCategoryById(1L);
         verify(productPersistencePort).saveProduct(product);
+    }
+
+    @Test
+    void getProducts_ShouldThrowProductNotFoundForBrandAndCategoryException_WhenNoProductsFoundForBrandAndCategory() {
+        PageCustom<Product> emptyPage = new PageCustom<>(Collections.emptyList(), 0, 1, 0);
+        when(productPersistencePort.getProducts(any(PageRequestCustom.class), anyString(), anyString())).thenReturn(emptyPage);
+
+        assertThrows(ProductNotFoundForBrandAndCategoryException.class, () ->
+                productUsecase.getProducts(new PageRequestCustom(), "brand", "category")
+        );
+
+        verify(productPersistencePort).getProducts(any(PageRequestCustom.class), eq("brand"), eq("category"));
+    }
+
+    @Test
+    void getProducts_ShouldThrowProductNotFoundForBrandException_WhenNoProductsFoundForBrand() {
+        PageCustom<Product> emptyPage = new PageCustom<>(Collections.emptyList(), 0, 1, 0);
+        when(productPersistencePort.getProducts(any(PageRequestCustom.class), eq("brand"), isNull())).thenReturn(emptyPage);
+
+        assertThrows(ProductNotFoundForBrandException.class, () ->
+                productUsecase.getProducts(new PageRequestCustom(), "brand", null)
+        );
+
+        verify(productPersistencePort).getProducts(any(PageRequestCustom.class), eq("brand"), isNull());
+    }
+
+
+    @Test
+    void getProducts_ShouldThrowProductNotFoundForCategoryException_WhenNoProductsFoundForCategory() {
+        PageCustom<Product> emptyPage = new PageCustom<>(Collections.emptyList(), 0, 1, 0);
+        when(productPersistencePort.getProducts(any(PageRequestCustom.class), eq(null), eq("category"))).thenReturn(emptyPage);
+
+        assertThrows(ProductNotFoundForCategoryException.class, () ->
+                productUsecase.getProducts(new PageRequestCustom(), null, "category")
+        );
+
+        Mockito.verify(productPersistencePort).getProducts(any(PageRequestCustom.class), eq(null), eq("category"));
+    }
+
+    @Test
+    void getProducts_ShouldThrowProductNotFoundException_WhenNoProductsFoundWithoutBrandAndCategory() {
+        PageCustom<Product> emptyPage = new PageCustom<>(Collections.emptyList(), 0, 1, 0);
+        when(productPersistencePort.getProducts(any(PageRequestCustom.class), eq(null), eq(null))).thenReturn(emptyPage);
+
+        assertThrows(ProductNotFoundException.class, () ->
+                productUsecase.getProducts(new PageRequestCustom(), null, null)
+        );
+
+        Mockito.verify(productPersistencePort).getProducts(any(PageRequestCustom.class), eq(null), eq(null));
+    }
+
+    @Test
+    void getProducts_ShouldReturnProductsPage_WhenProductsFound() {
+        Product product = new Product();
+        PageCustom<Product> productsPage = new PageCustom<>(Collections.singletonList(product), 1, 1, 1);
+        when(productPersistencePort.getProducts(any(PageRequestCustom.class), anyString(), anyString())).thenReturn(productsPage);
+
+        PageCustom<Product> result = productUsecase.getProducts(new PageRequestCustom(), "brand", "category");
+
+        assertEquals(productsPage, result);
+        verify(productPersistencePort).getProducts(any(PageRequestCustom.class), eq("brand"), eq("category"));
     }
 }

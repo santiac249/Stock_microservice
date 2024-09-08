@@ -1,6 +1,5 @@
 package com.stock_microservice.stock_microservice.infrastructure.output.jpa.repository;
 
-
 import com.stock_microservice.stock_microservice.infrastructure.output.jpa.entity.CategoryEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -14,5 +13,4 @@ public interface ICategoryRepository extends JpaRepository<CategoryEntity, Long>
     void deleteByName(String name);
 
     void deleteById(Long id);
-
 }

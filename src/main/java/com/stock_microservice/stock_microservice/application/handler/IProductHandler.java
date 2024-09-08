@@ -12,5 +12,5 @@ public interface IProductHandler {
     ProductResponse getProductById(Long id);
     ProductResponse getProductByName(String name);
     List<ProductResponse> getAllProducts();
-    PageCustom<ProductResponse> getProducts(PageRequestCustom pageRequest);
+    PageCustom<ProductResponse> getProducts(PageRequestCustom pageRequest, String brand, String category);
 }

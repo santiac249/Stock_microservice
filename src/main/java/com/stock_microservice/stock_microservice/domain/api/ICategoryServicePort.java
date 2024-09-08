@@ -8,18 +8,11 @@ import java.util.List;
 
 public interface ICategoryServicePort {
     List<Category> getAllCategories();
-
     Category getCategoryById(Long id);
-
     Category getCategoryByName(String name);
-
     void saveCategory(Category category);
-
     void updateCategory(Category category);
-
     void deleteCategoryById(Long id);
-
     void deleteCategoryByName(String name);
-
     PageCustom<Category> getCategories(PageRequestCustom pageRequest);
 }

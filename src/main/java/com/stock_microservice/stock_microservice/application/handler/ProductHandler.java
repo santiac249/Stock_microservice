@@ -68,8 +68,9 @@ public class ProductHandler implements IProductHandler {
     }
 
     @Override
-    public PageCustom<ProductResponse> getProducts(PageRequestCustom pageRequest) {
-        PageCustom<Product> productsPage = productServicePort.getProducts(pageRequest);
+    public PageCustom<ProductResponse> getProducts(PageRequestCustom pageRequest, String brand, String category) {
+        PageCustom<Product> productsPage = productServicePort.getProducts(pageRequest, brand, category);
+
         List<ProductResponse> responseList = productResponseMapper.toResponseList(productsPage.getContent());
         return new PageCustom<>(
                 responseList,
@@ -79,4 +80,5 @@ public class ProductHandler implements IProductHandler {
                 productsPage.isAscending()
         );
     }
+
 }

@@ -8,12 +8,8 @@ import java.util.List;
 
 public interface IProductPersistencePort {
     void saveProduct(Product product);
-
     List<Product> getAllProducts();
-
     Product getProductById(Long id);
-
     Product getProductByName(String name);
-
-    PageCustom<Product> getProducts(PageRequestCustom pageRequest);
+    PageCustom<Product> getProducts(PageRequestCustom pageRequest, String brand, String categories);
 }
